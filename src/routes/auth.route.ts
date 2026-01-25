@@ -10,6 +10,7 @@ const router = Router();
 
 router.post("/signup", async (req, res) => {
 
+    // zod validation
     const parsedResult = userSchema.safeParse(req.body);
 
     if (!parsedResult.success) {
@@ -25,7 +26,8 @@ router.post("/signup", async (req, res) => {
 
 
     try {
-        //! Check existed User
+
+        // Check existed User
         const existesUser = await prisma.user.findUnique({
             where: {
                 email: email
@@ -40,6 +42,8 @@ router.post("/signup", async (req, res) => {
             })
         }
 
+
+        // Hash the password
         const hashedPassword = await bcrypt.hash(password, 10);
 
         const user = await prisma.user.create({
@@ -47,7 +51,7 @@ router.post("/signup", async (req, res) => {
                 name,
                 email,
                 password: hashedPassword,
-                role,
+                role: "user",            // By default user
                 phone
             }
         })
@@ -84,6 +88,9 @@ router.post("/signup", async (req, res) => {
 router.post("/login", async (req, res) => {
     const { email, password } = req.body;
     try {
+
+
+        // Checking the user exists with this email
         const user = await prisma.user.findUnique({
             where: {
                 email: email
@@ -98,6 +105,8 @@ router.post("/login", async (req, res) => {
             })
         }
 
+
+        // Cheking the entered password is same as previous
         const isPasswordMatched = bcrypt.compare(password, user.password);
 
 
@@ -109,6 +118,8 @@ router.post("/login", async (req, res) => {
             })
         }
 
+
+        // Generating token
         const token = jwt.sign({
             userId: user.id
         }, process.env.JWT_SECRET ?? " ")
