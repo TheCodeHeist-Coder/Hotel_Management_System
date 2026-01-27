@@ -21,7 +21,7 @@ model User {
 }
 
 model Hotel {
-  id            String   @id @default(uuid())
+  id            String   @id  @default(uuid())
   ownerId       String
   name          String
   description   String
@@ -56,7 +56,7 @@ model Room {
 
 model Booking {
   id            String       @id @default(uuid())
-  userId        String
+  userId        String        @map("user_id")
   roomId        String
   hotelId       String
   checkInDate   DateTime     @map("check_in_date") @db.Date //? Stores only dates not time

@@ -1,11 +1,13 @@
 import { Router } from "express";
 import { prisma } from "../../lib/prisma";
+import { authMiddleware } from "../middlewares/authMiddleware";
+import { Decimal } from "@prisma/client/runtime/client";
 
 const router = Router();
 
 
 // Create a new Hotel(owner only)
- router.post("/hotels", async(req, res) => {
+ router.post("/hotels",authMiddleware, async(req, res) => {
 
     const {name, description, city, country, amenities} = req.body as {
         name: string,
@@ -18,8 +20,9 @@ const router = Router();
 
     const userId = req.user?.userId;
     const userRole = req.user?.userRole;
+    console.log(userRole)
 
-    if(userRole !== "owner"){
+    if(userRole != "owner"){
         return res.status(400).json({
              "success": false,
              "data": null,
@@ -62,6 +65,25 @@ const router = Router();
         "error": "Internal server error...."
       })  
     }
+
+ })
+
+
+
+ // Create a room inside a hotel(Owner only...)
+
+ router.post("/hotels/:hotelId/rooms",authMiddleware,  async(req, res) => {
+    const hotelId = req.params;
+    console.log(hotelId)
+
+    const {roomNumber, roomType, pricePerNight, maxOccupancy} = req.body as {
+        roomNumber: string,
+        roomType: string,
+        pricePerNight: Decimal,
+        maxOccupancy: number
+    }
+
+   
 
  })
 
