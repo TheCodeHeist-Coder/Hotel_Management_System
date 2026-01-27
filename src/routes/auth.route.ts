@@ -51,7 +51,7 @@ router.post("/signup", async (req, res) => {
                 name,
                 email,
                 password: hashedPassword,
-                role: "user",            // By default user
+                role,            // By default user
                 phone
             }
         })
