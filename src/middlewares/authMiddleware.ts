@@ -13,8 +13,6 @@ export const authMiddleware = async(req:Request, res:Response, next:NextFunction
     // Receiving authHeader from authorization header
     const authHeader = req.headers["authorization"];
 
-    console.log(authHeader)
-
     if(!authHeader){
         return res.status(404).json({
             "success": false,
